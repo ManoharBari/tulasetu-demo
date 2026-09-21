@@ -75,7 +75,6 @@ function TulaSetuApp() {
         {navItems.map((item) => <button key={item.id} onClick={() => { setScreen(item.id); setMobileNav(false); }} className={cn("flex w-full items-center gap-3 rounded-xl px-4 py-3.5 text-left text-sm font-semibold transition-all", screen === item.id ? "bg-card text-primary shadow-sm" : "text-muted-foreground hover:bg-card/60 hover:text-foreground")}><item.icon className="size-5" />{item.label}{screen === item.id && <ChevronRight className="ml-auto size-4 text-accent" />}</button>)}
       </nav>
       <div className="mt-auto p-5">
-        <div className="rounded-2xl border border-accent/20 bg-secondary/60 p-4"><div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase text-accent"><span className="size-2 rounded-full bg-success"/>Official demo</div><div className="text-xs font-bold">Legal Metrology</div><div className="mt-1 text-[10px] leading-relaxed text-muted-foreground">A secure digital bridge for fair measurement.</div></div>
         <button className="mt-3 flex w-full items-center gap-3 px-3 py-2 text-xs text-muted-foreground"><LogOut className="size-4" />Exit demo</button>
       </div>
     </aside>
