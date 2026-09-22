@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
-  AlertTriangle, BadgeCheck, BarChart3, Building2, CalendarClock, Camera, Check, CheckCircle2,
+  AlertTriangle, BadgeCheck, BarChart3, Bell, BellRing, Building2, CalendarClock, Camera, Check, CheckCircle2,
   ChevronRight, CircleGauge, ClipboardCheck, Clock3, FileCheck2, FileText, Fuel,
-  Gauge, Home, Info, LogOut, Menu, QrCode, Route as RouteIcon, Scale, Search, Send, ShieldCheck,
-  Sparkles, Upload, UserRoundCheck, X, XCircle,
+  Gauge, Home, Info, LogOut, Mail, Menu, MessageSquare, QrCode, Route as RouteIcon, Scale, Search, Send, ShieldCheck,
+  Siren, Smartphone, Sparkles, Upload, UserRoundCheck, X, XCircle,
 } from "lucide-react";
 import { useState, type FormEvent, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -44,6 +44,18 @@ const reportsSeed = [
   { id: "RPT-1071", reason: "Verification seal appears damaged", business: "Fresh Basket Market", location: "Saket, Delhi", date: "18 Sep 2026", status: "Reviewed" as Status },
   { id: "RPT-1064", reason: "Certificate QR code not visible", business: "New India Hardware", location: "Janakpuri, Delhi", date: "16 Sep 2026", status: "Pending" as Status },
   { id: "RPT-1058", reason: "Suspected under-weighing during purchase", business: "Capital Scrap Traders", location: "Mayapuri, Delhi", date: "15 Sep 2026", status: "Reviewed" as Status },
+];
+
+const officerAlerts = [
+  { id: "ALR-341", icon: Mail, channel: "Email", tone: "teal", text: "30-day expiry reminder sent to Sharma General Store — certificate ends 04 Oct 2026", time: "Today, 09:00 AM" },
+  { id: "ALR-340", icon: Smartphone, channel: "SMS", tone: "teal", text: "7-day reminder sent to Bharat Auto Fuel — fuel dispenser re-verification due", time: "Today, 09:00 AM" },
+  { id: "ALR-339", icon: Siren, channel: "Escalation", tone: "red", text: "Overdue: Mehta Jewellers certificate lapsed 2 days ago — flagged for field visit", time: "Today, 08:30 AM" },
+];
+
+const ownerAlertSchedule = [
+  { icon: Mail, channel: "Email", when: "30 days before expiry", detail: "Renewal notice with application link" },
+  { icon: Smartphone, channel: "SMS", when: "7 days before expiry", detail: "Short reminder with certificate ID" },
+  { icon: MessageSquare, channel: "WhatsApp", when: "1 day before expiry", detail: "Final warning before lapsing" },
 ];
 
 const navItems = [
