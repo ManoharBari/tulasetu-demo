@@ -108,10 +108,10 @@ function OwnerPortal() {
 }
 
 const scheduleSlots = [
-  { time: "09:30 AM", app: () => inspections[1], travel: "Start point • Narela", duration: "45 min" },
-  { time: "11:15 AM", app: () => inspections[0], travel: "18 km • ~40 min drive", duration: "40 min" },
-  { time: "01:30 PM", app: () => inspections[2], travel: "14 km • ~35 min drive", duration: "35 min" },
-  { time: "03:15 PM", app: () => inspections[3], travel: "22 km • ~50 min drive", duration: "50 min" },
+  { time: "09:30 AM", app: () => inspections[1]!, travel: "Start point • Narela", duration: "45 min" },
+  { time: "11:15 AM", app: () => inspections[0]!, travel: "18 km • ~40 min drive", duration: "40 min" },
+  { time: "01:30 PM", app: () => inspections[2]!, travel: "14 km • ~35 min drive", duration: "35 min" },
+  { time: "03:15 PM", app: () => inspections[3]!, travel: "22 km • ~50 min drive", duration: "50 min" },
 ];
 
 function SmartSchedule({ onSelect }: { onSelect: (item: (typeof inspections)[number]) => void }) {
@@ -122,7 +122,7 @@ function SmartSchedule({ onSelect }: { onSelect: (item: (typeof inspections)[num
       <Button variant={planned ? "outline" : "teal"} size="sm" onClick={() => setPlanned(!planned)}>{planned ? <><X className="size-3.5" />Clear plan</> : <><Sparkles className="size-3.5" />Plan my day</>}</Button>
     </div>
     {!planned ? <div className="flex items-center gap-3 p-5 text-sm text-muted-foreground"><Info className="size-4 shrink-0 text-accent" />4 pending inspections across 3 zones. One tap builds a route with estimated travel times.</div> : <div className="p-5"><div className="mb-4 flex flex-wrap items-center gap-2 text-[11px] font-bold"><span className="rounded-full bg-secondary px-3 py-1.5 text-accent">4 visits</span><span className="rounded-full bg-secondary px-3 py-1.5 text-accent">54 km total</span><span className="rounded-full bg-secondary px-3 py-1.5 text-accent">Est. finish 04:05 PM</span><span className="rounded-full bg-success-soft px-3 py-1.5 text-success">Route optimized</span></div>
-      <ol className="space-y-0">{scheduleSlots.map((slot, i) => <li key={slot.time} className="relative flex gap-4 pb-5 last:pb-0"><div className="flex flex-col items-center"><span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-accent bg-card text-[11px] font-bold text-accent">{i + 1}</span>{i < scheduleSlots.length - 1 && <span className="w-0.5 flex-1 bg-accent/25" />}</div><button onClick={() => onSelect(slot.app())} className="mb-1 flex-1 rounded-xl border border-border bg-muted/40 p-4 text-left transition-all hover:border-accent/50 hover:shadow-sm"><div className="flex flex-wrap items-center justify-between gap-2"><span className="text-sm font-bold">{slot.app().business}</span><span className="rounded-md bg-card px-2 py-1 text-[11px] font-bold text-accent shadow-sm">{slot.time} • {slot.duration}</span></div><p className="mt-1 text-xs text-muted-foreground">{slot.app().type} • {slot.app().location}</p><p className="mt-2 flex items-center gap-1.5 text-[11px] font-semibold text-orange"><RouteIcon className="size-3.5" />{slot.travel}</p></button></li>)}</ol></div>}
+      <ol className="space-y-0">{scheduleSlots.map((slot, i) => <li key={slot.time} className="relative flex gap-4 pb-5 last:pb-0"><div className="flex flex-col items-center"><span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-accent bg-card text-[11px] font-bold text-accent">{i + 1}</span>{i < scheduleSlots.length - 1 && <span className="w-0.5 flex-1 bg-accent/25" />}</div><button onClick={() => onSelect(slot.app()!)} className="mb-1 flex-1 rounded-xl border border-border bg-muted/40 p-4 text-left transition-all hover:border-accent/50 hover:shadow-sm"><div className="flex flex-wrap items-center justify-between gap-2"><span className="text-sm font-bold">{slot.app()!.business}</span><span className="rounded-md bg-card px-2 py-1 text-[11px] font-bold text-accent shadow-sm">{slot.time} • {slot.duration}</span></div><p className="mt-1 text-xs text-muted-foreground">{slot.app()!.type} • {slot.app()!.location}</p><p className="mt-2 flex items-center gap-1.5 text-[11px] font-semibold text-orange"><RouteIcon className="size-3.5" />{slot.travel}</p></button></li>)}</ol></div>}
   </section>;
 }
 
