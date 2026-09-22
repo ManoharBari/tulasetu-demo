@@ -108,6 +108,29 @@ function TulaSetuApp() {
   </div>;
 }
 
+function OwnerAlerts() {
+  const [renewed, setRenewed] = useState(false);
+  const [channels, setChannels] = useState({ Email: true, SMS: true, WhatsApp: false });
+  return <section className="rounded-lg border border-border bg-card shadow-sm">
+    <div className="flex items-start gap-3 border-b border-border p-5 md:p-6"><div className="rounded-md bg-orange-soft p-2 text-orange"><BellRing /></div><div><h2 className="font-display font-bold">Automated expiry alerts</h2><p className="mt-1 text-xs text-muted-foreground">TulaSetu notifies you automatically before a certificate lapses — no manual tracking needed.</p></div></div>
+    <div className="space-y-5 p-5 md:p-6">
+      <div className="flex flex-col gap-3 rounded-xl border border-orange/40 bg-orange-soft p-4 sm:flex-row sm:items-center"><div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-orange text-primary-foreground"><Bell className="size-5" /></div><div className="min-w-0 flex-1"><div className="text-sm font-bold">Certificate expires in 12 days</div><p className="mt-0.5 text-xs text-muted-foreground">Electronic Weighing Scale • Sharma General Store • valid until 04 Oct 2026</p></div>{renewed ? <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-success-soft px-3 py-1.5 text-xs font-bold text-success"><Check className="size-3.5" />Renewal requested</span> : <Button variant="orange" size="sm" onClick={() => setRenewed(true)}>Renew now</Button>}</div>
+      <div className="grid gap-3 sm:grid-cols-3">{ownerAlertSchedule.map((step) => <div key={step.when} className="rounded-xl border border-border bg-muted/40 p-4"><div className="flex items-center gap-2 text-accent"><step.icon className="size-4" /><span className="text-[11px] font-bold uppercase">{step.channel}</span></div><div className="mt-2 text-sm font-bold">{step.when}</div><p className="mt-1 text-[11px] text-muted-foreground">{step.detail}</p></div>)}</div>
+      <div className="flex flex-col gap-3 rounded-xl border border-border p-4 sm:flex-row sm:items-center"><div className="flex-1"><div className="text-sm font-bold">Notification channels</div><p className="mt-0.5 text-xs text-muted-foreground">Choose how automated alerts reach you.</p></div><div className="flex flex-wrap gap-2">{(Object.keys(channels) as (keyof typeof channels)[]).map((name) => <button key={name} type="button" onClick={() => setChannels((prev) => ({ ...prev, [name]: !prev[name] }))} className={cn("flex items-center gap-2 rounded-full border px-3.5 py-2 text-xs font-bold transition-all", channels[name] ? "border-accent bg-secondary text-accent" : "border-border text-muted-foreground")}><span className={cn("flex h-4 w-7 items-center rounded-full p-0.5 transition-colors", channels[name] ? "bg-accent" : "bg-border")}><span className={cn("size-3 rounded-full bg-card transition-transform", channels[name] && "translate-x-3")} /></span>{name}</button>)}</div></div>
+    </div>
+  </section>;
+}
+
+function OfficerAlerts() {
+  return <section className="rounded-2xl border border-border bg-card shadow-sm">
+    <div className="flex flex-col gap-3 border-b border-border p-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-start gap-3"><div className="rounded-md bg-secondary p-2 text-accent"><Bell className="size-5" /></div><div><h2 className="font-display font-bold">Automated alerts</h2><p className="mt-1 text-xs text-muted-foreground">Expiry notices and escalations dispatched automatically across your jurisdiction.</p></div></div>
+      <span className="w-fit rounded-full bg-secondary px-3 py-1.5 text-[11px] font-bold text-accent">3 sent today • auto</span>
+    </div>
+    <div className="divide-y divide-border">{officerAlerts.map((alert) => <div key={alert.id} className="flex items-start gap-3 px-5 py-4"><div className={cn("flex size-9 shrink-0 items-center justify-center rounded-lg", alert.tone === "red" ? "bg-danger-soft text-destructive" : "bg-secondary text-accent")}><alert.icon className="size-4" /></div><div className="min-w-0 flex-1"><p className="text-sm font-semibold">{alert.text}</p><p className="mt-1 text-[11px] text-muted-foreground">{alert.id} • {alert.channel} • {alert.time}</p></div><span className={cn("mt-1 hidden rounded-full px-2.5 py-1 text-[10px] font-bold sm:inline-flex", alert.tone === "red" ? "bg-danger-soft text-destructive" : "bg-success-soft text-success")}>{alert.tone === "red" ? "Action needed" : "Delivered"}</span></div>)}</div>
+  </section>;
+}
+
 function OwnerPortal() {
   const [submitted, setSubmitted] = useState(false);
   function submit(e: FormEvent) { e.preventDefault(); setSubmitted(true); }
