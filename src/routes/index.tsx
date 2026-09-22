@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
-  AlertTriangle, BadgeCheck, BarChart3, Building2, CalendarClock, Camera, Check, CheckCircle2,
+  AlertTriangle, BadgeCheck, BarChart3, Bell, BellRing, Building2, CalendarClock, Camera, Check, CheckCircle2,
   ChevronRight, CircleGauge, ClipboardCheck, Clock3, FileCheck2, FileText, Fuel,
-  Gauge, Home, Info, LogOut, Menu, QrCode, Route as RouteIcon, Scale, Search, Send, ShieldCheck,
-  Sparkles, Upload, UserRoundCheck, X, XCircle,
+  Gauge, Home, Info, LogOut, Mail, Menu, MessageSquare, QrCode, Route as RouteIcon, Scale, Search, Send, ShieldCheck,
+  Siren, Smartphone, Sparkles, Upload, UserRoundCheck, X, XCircle,
 } from "lucide-react";
 import { useState, type FormEvent, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
@@ -44,6 +44,18 @@ const reportsSeed = [
   { id: "RPT-1071", reason: "Verification seal appears damaged", business: "Fresh Basket Market", location: "Saket, Delhi", date: "18 Sep 2026", status: "Reviewed" as Status },
   { id: "RPT-1064", reason: "Certificate QR code not visible", business: "New India Hardware", location: "Janakpuri, Delhi", date: "16 Sep 2026", status: "Pending" as Status },
   { id: "RPT-1058", reason: "Suspected under-weighing during purchase", business: "Capital Scrap Traders", location: "Mayapuri, Delhi", date: "15 Sep 2026", status: "Reviewed" as Status },
+];
+
+const officerAlerts = [
+  { id: "ALR-341", icon: Mail, channel: "Email", tone: "teal", text: "30-day expiry reminder sent to Sharma General Store — certificate ends 04 Oct 2026", time: "Today, 09:00 AM" },
+  { id: "ALR-340", icon: Smartphone, channel: "SMS", tone: "teal", text: "7-day reminder sent to Bharat Auto Fuel — fuel dispenser re-verification due", time: "Today, 09:00 AM" },
+  { id: "ALR-339", icon: Siren, channel: "Escalation", tone: "red", text: "Overdue: Mehta Jewellers certificate lapsed 2 days ago — flagged for field visit", time: "Today, 08:30 AM" },
+];
+
+const ownerAlertSchedule = [
+  { icon: Mail, channel: "Email", when: "30 days before expiry", detail: "Renewal notice with application link" },
+  { icon: Smartphone, channel: "SMS", when: "7 days before expiry", detail: "Short reminder with certificate ID" },
+  { icon: MessageSquare, channel: "WhatsApp", when: "1 day before expiry", detail: "Final warning before lapsing" },
 ];
 
 const navItems = [
@@ -96,6 +108,29 @@ function TulaSetuApp() {
   </div>;
 }
 
+function OwnerAlerts() {
+  const [renewed, setRenewed] = useState(false);
+  const [channels, setChannels] = useState({ Email: true, SMS: true, WhatsApp: false });
+  return <section className="rounded-lg border border-border bg-card shadow-sm">
+    <div className="flex items-start gap-3 border-b border-border p-5 md:p-6"><div className="rounded-md bg-orange-soft p-2 text-orange"><BellRing /></div><div><h2 className="font-display font-bold">Automated expiry alerts</h2><p className="mt-1 text-xs text-muted-foreground">TulaSetu notifies you automatically before a certificate lapses — no manual tracking needed.</p></div></div>
+    <div className="space-y-5 p-5 md:p-6">
+      <div className="flex flex-col gap-3 rounded-xl border border-orange/40 bg-orange-soft p-4 sm:flex-row sm:items-center"><div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-orange text-primary-foreground"><Bell className="size-5" /></div><div className="min-w-0 flex-1"><div className="text-sm font-bold">Certificate expires in 12 days</div><p className="mt-0.5 text-xs text-muted-foreground">Electronic Weighing Scale • Sharma General Store • valid until 04 Oct 2026</p></div>{renewed ? <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-success-soft px-3 py-1.5 text-xs font-bold text-success"><Check className="size-3.5" />Renewal requested</span> : <Button size="sm" onClick={() => setRenewed(true)}>Renew now</Button>}</div>
+      <div className="grid gap-3 sm:grid-cols-3">{ownerAlertSchedule.map((step) => <div key={step.when} className="rounded-xl border border-border bg-muted/40 p-4"><div className="flex items-center gap-2 text-accent"><step.icon className="size-4" /><span className="text-[11px] font-bold uppercase">{step.channel}</span></div><div className="mt-2 text-sm font-bold">{step.when}</div><p className="mt-1 text-[11px] text-muted-foreground">{step.detail}</p></div>)}</div>
+      <div className="flex flex-col gap-3 rounded-xl border border-border p-4 sm:flex-row sm:items-center"><div className="flex-1"><div className="text-sm font-bold">Notification channels</div><p className="mt-0.5 text-xs text-muted-foreground">Choose how automated alerts reach you.</p></div><div className="flex flex-wrap gap-2">{(Object.keys(channels) as (keyof typeof channels)[]).map((name) => <button key={name} type="button" onClick={() => setChannels((prev) => ({ ...prev, [name]: !prev[name] }))} className={cn("flex items-center gap-2 rounded-full border px-3.5 py-2 text-xs font-bold transition-all", channels[name] ? "border-accent bg-secondary text-accent" : "border-border text-muted-foreground")}><span className={cn("flex h-4 w-7 items-center rounded-full p-0.5 transition-colors", channels[name] ? "bg-accent" : "bg-border")}><span className={cn("size-3 rounded-full bg-card transition-transform", channels[name] && "translate-x-3")} /></span>{name}</button>)}</div></div>
+    </div>
+  </section>;
+}
+
+function OfficerAlerts() {
+  return <section className="rounded-2xl border border-border bg-card shadow-sm">
+    <div className="flex flex-col gap-3 border-b border-border p-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-start gap-3"><div className="rounded-md bg-secondary p-2 text-accent"><Bell className="size-5" /></div><div><h2 className="font-display font-bold">Automated alerts</h2><p className="mt-1 text-xs text-muted-foreground">Expiry notices and escalations dispatched automatically across your jurisdiction.</p></div></div>
+      <span className="w-fit rounded-full bg-secondary px-3 py-1.5 text-[11px] font-bold text-accent">3 sent today • auto</span>
+    </div>
+    <div className="divide-y divide-border">{officerAlerts.map((alert) => <div key={alert.id} className="flex items-start gap-3 px-5 py-4"><div className={cn("flex size-9 shrink-0 items-center justify-center rounded-lg", alert.tone === "red" ? "bg-danger-soft text-destructive" : "bg-secondary text-accent")}><alert.icon className="size-4" /></div><div className="min-w-0 flex-1"><p className="text-sm font-semibold">{alert.text}</p><p className="mt-1 text-[11px] text-muted-foreground">{alert.id} • {alert.channel} • {alert.time}</p></div><span className={cn("mt-1 hidden rounded-full px-2.5 py-1 text-[10px] font-bold sm:inline-flex", alert.tone === "red" ? "bg-danger-soft text-destructive" : "bg-success-soft text-success")}>{alert.tone === "red" ? "Action needed" : "Delivered"}</span></div>)}</div>
+  </section>;
+}
+
 function OwnerPortal() {
   const [submitted, setSubmitted] = useState(false);
   function submit(e: FormEvent) { e.preventDefault(); setSubmitted(true); }
@@ -103,6 +138,7 @@ function OwnerPortal() {
     <section className="rounded-lg border border-border bg-card shadow-sm"><div className="flex items-start gap-3 border-b border-border p-5 md:p-6"><div className="rounded-md bg-secondary p-2 text-accent"><FileCheck2 /></div><div><h2 className="font-display font-bold">New verification request</h2><p className="mt-1 text-xs text-muted-foreground">Enter instrument and establishment details for inspection.</p></div></div>
       {submitted ? <div className="p-10 text-center"><div className="mx-auto flex size-12 items-center justify-center rounded-full bg-success-soft text-success"><CheckCircle2 /></div><h3 className="mt-4 font-display text-lg font-bold">Application submitted</h3><p className="mt-1 text-sm text-muted-foreground">Reference TS-APP-241026 has been added to the inspection queue.</p><Button className="mt-5" variant="outline" onClick={() => setSubmitted(false)}>Submit another</Button></div> : <form onSubmit={submit} className="grid gap-5 p-5 md:grid-cols-2 md:p-6"><Field label="Instrument type"><select required className="input"><option>Electronic Weighing Scale</option><option>Fuel Dispenser</option><option>Platform Scale</option><option>Precision Balance</option></select></Field><Field label="Business / establishment name"><input required className="input" defaultValue="Sharma General Store" /></Field><Field label="Location"><input required className="input" defaultValue="Karol Bagh, New Delhi — 110005" /></Field><Field label="Instrument serial number"><input required className="input" defaultValue="EWS-DL-748291" /></Field><div className="md:col-span-2"><UploadBox label="Upload instrument photograph" /></div><div className="flex justify-end md:col-span-2"><Button variant="teal" type="submit"><Send className="size-4" />Submit for verification</Button></div></form>}
     </section>
+    <OwnerAlerts />
     <section><div className="mb-4 flex items-center justify-between"><div><h2 className="font-display font-bold">Your applications</h2><p className="text-xs text-muted-foreground">4 applications submitted this month</p></div><Button variant="outline" size="sm"><Search className="size-3.5" />Filter</Button></div><div className="overflow-hidden rounded-lg border border-border bg-card"><div className="hidden grid-cols-[1.1fr_1.4fr_1.2fr_.8fr] gap-4 border-b border-border bg-muted/60 px-5 py-3 text-[10px] font-bold uppercase text-muted-foreground md:grid"><span>Application</span><span>Establishment</span><span>Location</span><span>Status</span></div>{applications.map((app) => <div key={app.id} className="grid gap-2 border-b border-border px-5 py-4 last:border-0 md:grid-cols-[1.1fr_1.4fr_1.2fr_.8fr] md:items-center md:gap-4"><div><div className="text-sm font-bold">{app.instrument}</div><div className="text-[11px] text-muted-foreground">{app.id} • {app.date}</div></div><div className="text-sm font-medium">{app.business}</div><div className="text-xs text-muted-foreground">{app.location}</div><StatusBadge status={app.status} /></div>)}</div></section>
   </div>;
 }
@@ -130,7 +166,7 @@ function OfficerScreen() {
   const [selected, setSelected] = useState(inspections[0]); const [certificate, setCertificate] = useState(false); const [result, setResult] = useState("pass");
   if (!selected) return null;
   if (certificate) return <Certificate business={selected.business} type={selected.type} onBack={() => setCertificate(false)} />;
-  return <div className="space-y-6"><SmartSchedule onSelect={setSelected} /><div className="grid gap-6 xl:grid-cols-[.82fr_1.18fr]"><section><div className="mb-4 flex items-center justify-between"><div><h2 className="font-display font-bold">Pending queue</h2><p className="text-xs text-muted-foreground">4 inspections awaiting action</p></div><span className="rounded-md bg-orange-soft px-2 py-1 text-xs font-bold text-orange">4 pending</span></div><div className="space-y-3">{inspections.map((item, i) => <button key={item.id} onClick={() => setSelected(item)} className={cn("w-full rounded-lg border bg-card p-4 text-left transition-all", selected.id === item.id ? "border-accent shadow-sm ring-1 ring-accent" : "border-border hover:border-accent/40")}><div className="flex gap-3"><div className={cn("flex size-10 shrink-0 items-center justify-center rounded-md", i === 3 ? "bg-orange-soft text-orange" : "bg-secondary text-accent")}>{i === 3 ? <Fuel /> : <Scale />}</div><div className="min-w-0 flex-1"><div className="flex justify-between gap-2"><span className="truncate text-sm font-bold">{item.business}</span><ChevronRight className="size-4 text-muted-foreground" /></div><p className="mt-0.5 text-xs text-muted-foreground">{item.type}</p><p className="mt-2 text-[11px] text-muted-foreground">{item.id} • {item.submitted}</p></div></div></button>)}</div></section>
+  return <div className="space-y-6"><OfficerAlerts /><SmartSchedule onSelect={setSelected} /><div className="grid gap-6 xl:grid-cols-[.82fr_1.18fr]"><section><div className="mb-4 flex items-center justify-between"><div><h2 className="font-display font-bold">Pending queue</h2><p className="text-xs text-muted-foreground">4 inspections awaiting action</p></div><span className="rounded-md bg-orange-soft px-2 py-1 text-xs font-bold text-orange">4 pending</span></div><div className="space-y-3">{inspections.map((item, i) => <button key={item.id} onClick={() => setSelected(item)} className={cn("w-full rounded-lg border bg-card p-4 text-left transition-all", selected.id === item.id ? "border-accent shadow-sm ring-1 ring-accent" : "border-border hover:border-accent/40")}><div className="flex gap-3"><div className={cn("flex size-10 shrink-0 items-center justify-center rounded-md", i === 3 ? "bg-orange-soft text-orange" : "bg-secondary text-accent")}>{i === 3 ? <Fuel /> : <Scale />}</div><div className="min-w-0 flex-1"><div className="flex justify-between gap-2"><span className="truncate text-sm font-bold">{item.business}</span><ChevronRight className="size-4 text-muted-foreground" /></div><p className="mt-0.5 text-xs text-muted-foreground">{item.type}</p><p className="mt-2 text-[11px] text-muted-foreground">{item.id} • {item.submitted}</p></div></div></button>)}</div></section>
     <section className="h-fit rounded-lg border border-border bg-card shadow-sm"><div className="border-b border-border p-5"><div className="flex items-center justify-between"><div><span className="text-[10px] font-bold uppercase text-accent">Inspection record</span><h2 className="mt-1 font-display text-lg font-bold">{selected.business}</h2></div><StatusBadge status="Pending" /></div><div className="mt-4 grid gap-3 rounded-md bg-muted p-4 text-xs sm:grid-cols-2"><span><b>Instrument:</b> {selected.type}</span><span><b>Application:</b> {selected.id}</span><span className="sm:col-span-2"><b>Location:</b> {selected.location}</span></div></div>
       <form onSubmit={(e) => { e.preventDefault(); setCertificate(true); }} className="space-y-5 p-5"><Field label="Inspection result"><div className="grid grid-cols-2 gap-3"><button type="button" onClick={() => setResult("pass")} className={cn("flex items-center justify-center gap-2 rounded-md border p-3 text-sm font-bold", result === "pass" ? "border-success bg-success-soft text-success" : "border-border")}><CheckCircle2 className="size-4" />Pass</button><button type="button" onClick={() => setResult("fail")} className={cn("flex items-center justify-center gap-2 rounded-md border p-3 text-sm font-bold", result === "fail" ? "border-destructive bg-danger-soft text-destructive" : "border-border")}><XCircle className="size-4" />Fail</button></div></Field><Field label="Observed reading"><div className="relative"><input className="input pr-12" defaultValue="5.002" required /><span className="absolute right-3 top-2.5 text-xs font-bold text-muted-foreground">kg</span></div></Field><Field label="Inspection notes"><textarea className="input min-h-20 resize-none" defaultValue="Instrument tested with standard 5 kg reference weight. Reading within permissible error limit." /></Field><UploadBox label="Add inspection photograph" compact /><Button className="w-full" variant="teal" type="submit"><BadgeCheck className="size-4" />Submit result & generate certificate</Button></form>
     </section></div></div>;
